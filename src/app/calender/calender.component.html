@@ -1,0 +1,15 @@
+<p>calender works!</p>
+<form [formGroup]="dateRangeForm" (ngSubmit)="onSubmit()">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" formControlName="startDate">
+  
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" name="endDate" formControlName="endDate">
+  
+    <div *ngIf="dateRangeForm.errors && dateRangeForm.errors['dateRangeError']">
+      <p>{{ dateRangeForm.errors['dateRangeError'].message }}</p>
+    </div>
+  
+    <button type="submit" [disabled]="!dateRangeForm.valid">Save</button>
+  </form>
+  
