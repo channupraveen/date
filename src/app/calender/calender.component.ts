@@ -1,36 +1,33 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.component.html',
   styleUrls: ['./calender.component.css']
 })
 export class CalenderComponent {
-  dateRangeForm: FormGroup;
+  myForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.dateRangeForm = this.formBuilder.group({
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required]
-    }, {validator: this.dateRangeValidator});
+  constructor() {
+    this.myForm = new FormGroup({
+      myDate: new FormControl('', [Validators.required, this.futureDateValidator()])
+    });
   }
+  futureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const currentDate = new Date();
+      const inputDate = new Date(control.value);
   
-  dateRangeValidator(formGroup: FormGroup) {
-    const startDate = formGroup.get('startDate')?.value;
-    const endDate = formGroup.get('endDate')?.value;
-    if (startDate && endDate) {
-      if (new Date(endDate) < new Date(startDate)) {
-        return { dateRangeError: 'End date must not be less than start date' };
+      if (inputDate > currentDate) {
+        return { 'futureDate': true };
       }
-      if (new Date(startDate) > new Date()) {
-        return { dateRangeError: 'Start date must be a past date' };
-      }
-    }
-    return null;
-  }
-  onSubmit() {
-    // Handle form submission here
-    console.log('Form submitted');
-  }
+      
+      return null;
+    };
+   
+}
+onSubmit() {
+  // handle form submission
+}
 }
